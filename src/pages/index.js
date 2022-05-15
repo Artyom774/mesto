@@ -12,8 +12,8 @@ import { profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate
 
 // секция для карточек
 const cardSection = new Section({items: initialCards, renderer: (item) => {
-  const newCard = new Card(item, cardTemplate, (link, title) => {popupPhoto.open(link, title);});
-  cardSection.addItem(newCard.createCard());
+  const aNewCard = cardSection.newCard(item, cardTemplate);
+  cardSection.addItem(aNewCard.createCard());
 }}, cardsContainerSelection);
 cardSection.addInitialItems();  // добавить начальные карточки
 
@@ -25,14 +25,13 @@ profileValidation.enableValidation(); // запускает валидацию �
 addCardValidation.enableValidation();
 
 // создание всплывающих окон (ВО)
-const popupPhoto = new PopupWithImage('.photo-popup');
+export const popupPhoto = new PopupWithImage('.photo-popup');
 const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   profileInfo.setUserInfo(data.name, data.job);
 });
-const popupAdd = new PopupWithForm('.popup-add',() => {
-  const data = popupAdd._getInputValues();
-  const newCard = new Card(data, cardTemplate, (link, title) => {popupPhoto.open(link, title);});
-  cardSection.addItem(newCard.createCard());
+const popupAdd = new PopupWithForm('.popup-add',(data) => {
+  const aNewCard = cardSection.newCard(data, cardTemplate);
+  cardSection.addItem(aNewCard.createCard());
 });
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
