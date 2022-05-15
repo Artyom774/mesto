@@ -10,10 +10,14 @@ import UserInfo from '../components/UserInfo.js';
 import { profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
   popupName, popupJob, popupEditForm, popupAddForm, initialCards, setting } from '../utils/constants.js';
 
+function createCard(item) {
+  const newCard = new Card(item, cardTemplate, (link, title) => {popupPhoto.open(link, title);}); 
+  return newCard.createCard();
+} 
+
 // секция для карточек
 const cardSection = new Section({items: initialCards, renderer: (item) => {
-  const aNewCard = cardSection.newCard(item, cardTemplate);
-  cardSection.addItem(aNewCard.createCard());
+  cardSection.addItem(createCard(item));
 }}, cardsContainerSelection);
 cardSection.addInitialItems();  // добавить начальные карточки
 
@@ -30,8 +34,8 @@ const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   profileInfo.setUserInfo(data.name, data.job);
 });
 const popupAdd = new PopupWithForm('.popup-add',(data) => {
-  const aNewCard = cardSection.newCard(data, cardTemplate);
-  cardSection.addItem(aNewCard.createCard());
+  const aNewCard = createCard(data);
+  cardSection.addItem(aNewCard);
 });
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
