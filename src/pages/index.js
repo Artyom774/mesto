@@ -7,19 +7,40 @@ import FormValidator from '../components/FormValidator.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import UserInfo from '../components/UserInfo.js';
-import { profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
+import { profileAvatar, profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
   popupName, popupJob, popupEditForm, popupAddForm, initialCards, setting } from '../utils/constants.js';
 
 function createCard(item) {
   const newCard = new Card(item, cardTemplate, (link, title) => {popupPhoto.open(link, title);}); 
   return newCard.createCard();
-} 
+}
 
-// секция для карточек
-const cardSection = new Section({items: initialCards, renderer: (item) => {
-  cardSection.addItem(createCard(item));
-}}, cardsContainerSelection);
-cardSection.addInitialItems();  // добавить начальные карточки
+fetch('https://nomoreparties.co/v1/cohort-42/users/me', { // загрузка сведений о пользователе со сервера
+  headers: {
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8'
+  }
+})
+  .then(res => res.json())
+  .then((result) => {
+    profileInfo.setUserInfo(result.name, result.about);
+    profileAvatar.src = result.avatar;
+  });
+
+fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
+  headers: {
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8'
+  }
+})
+  .then(res => res.json())
+  .then((result) => {
+    result.forEach((item) => {
+      initialCards.push(item);
+    });
+    const cardSection = new Section({items: initialCards, renderer: (item) => {   // секция для карточек
+      cardSection.addItem(createCard(item));
+    }}, cardsContainerSelection);
+    cardSection.addInitialItems();  // добавить начальные карточки
+  });
 
 // валидация форм
 const profileInfo = new UserInfo({name: '.profile__name', job: '.profile__description'});
