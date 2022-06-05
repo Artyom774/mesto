@@ -11,7 +11,7 @@ import { profileAvatar, profileEditButton, cardAddButton, cardsContainerSelectio
   popupName, popupJob, popupEditForm, popupAddForm, initialCards, setting } from '../utils/constants.js';
 
 function createCard(item) {
-  const newCard = new Card(item, cardTemplate, (link, title) => {popupPhoto.open(link, title);}); 
+  const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}); 
   return newCard.createCard();
 }
 
@@ -42,6 +42,10 @@ fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
     cardSection.addInitialItems();  // добавить начальные карточки
   });
 
+const cardSection = new Section({items: initialCards, renderer: (item) => {   // секция для карточек
+  cardSection.addItem(createCard(item));
+}}, cardsContainerSelection);
+
 // валидация форм
 const profileInfo = new UserInfo({name: '.profile__name', job: '.profile__description'});
 const profileValidation = new FormValidator(setting, popupEditForm);
@@ -53,10 +57,33 @@ addCardValidation.enableValidation();
 export const popupPhoto = new PopupWithImage('.photo-popup');
 const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   profileInfo.setUserInfo(data.name, data.job);
+  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me', {
+  method: 'PATCH',
+  headers: {
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: data.name,
+    about: data.job
+  })
+  });
 });
 const popupAdd = new PopupWithForm('.popup-add',(data) => {
   const aNewCard = createCard(data);
   cardSection.addItem(aNewCard);
+  fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
+  method: 'POST',
+  headers: {
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
+    'Content-Type': 'application/json; charset=UTF-8'
+  },
+  body: JSON.stringify({
+    name: data.name,
+    link: data.link
+  })
+  }).then(res => res.json())
+  .then((result)=>{console.log(result)});
 });
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
