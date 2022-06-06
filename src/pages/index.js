@@ -70,6 +70,7 @@ const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   });
 });
 const popupAdd = new PopupWithForm('.popup-add',(data) => {
+  data.likes = [];
   const aNewCard = createCard(data);
   cardSection.addItem(aNewCard);
   fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
@@ -82,8 +83,7 @@ const popupAdd = new PopupWithForm('.popup-add',(data) => {
     name: data.name,
     link: data.link
   })
-  }).then(res => res.json())
-  .then((result)=>{console.log(result)});
+  });
 });
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
