@@ -15,6 +15,7 @@
 .cards{box-sizing:border-box;display:grid;gap:20px 17px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:0;min-height:100px;width:100%}@media (max-width:934px){.cards{padding-left:calc(467px - 50vw);padding-right:calc(467px - 50vw)}}@media (max-width:880px){.cards{padding-left:19px;padding-right:19px}}
 .card{background-color:#fff;border-radius:10px;display:flex;flex-direction:column;max-width:534px;min-height:362px;overflow:hidden;position:relative}
 .card__delete{background-color:transparent;background-image:url(246d9904e4bc8394be91.svg);background-repeat:no-repeat;border:none;cursor:pointer;display:flex;height:19px;margin:auto;position:absolute;right:20px;top:20px;transition:1s;-webkit-transition:1s;-moz-transition:1s;-o-transition:1s;width:18px}.card__delete:hover{opacity:.6;transition-duration:1s}
+.card__delete_hidden{display:none}
 .card__photo{cursor:pointer;height:282px;-o-object-fit:cover;object-fit:cover;width:100%}
 .card__caption-block{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;min-height:80px;width:100%}
 .card__caption{color:#000;font-size:24px;font-weight:900;line-height:29px;margin:25px 0 31px 21px;overflow:hidden;padding:0;text-overflow:ellipsis;white-space:nowrap;width:calc(100% - 85px)}
