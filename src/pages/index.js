@@ -27,7 +27,7 @@ fetch('https://nomoreparties.co/v1/cohort-42/users/me', { // загрузка с
     profileAvatar.src = result.avatar;
   });
 
-fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
+fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {  // загрузка изначальных карточек
   headers: {
     authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8'
   }
@@ -58,7 +58,7 @@ addCardValidation.enableValidation();
 export const popupPhoto = new PopupWithImage('.photo-popup');
 const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   profileInfo.setUserInfo(data.name, data.job);
-  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me', {
+  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me', {   // отправка обновлённых данных о пользователе
   method: 'PATCH',
   headers: {
     authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
@@ -71,11 +71,9 @@ const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   });
 });
 const popupAdd = new PopupWithForm('.popup-add',(data) => {
-  data.likes = [];
-  data.owner = {_id: 'dbbc920c38acac6899a63e51'};
-  const aNewCard = createCard(data);
-  cardSection.addItem(aNewCard);
-  fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
+  //data.likes = [];
+  //data.owner = {_id: 'dbbc920c38acac6899a63e51'};
+  fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {  // загрузка новой карточки на сервер
   method: 'POST',
   headers: {
     authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
@@ -85,7 +83,13 @@ const popupAdd = new PopupWithForm('.popup-add',(data) => {
     name: data.name,
     link: data.link
   })
+  }).then(res => res.json())
+  .then(result => {
+    const aNewCard = createCard(result);
+    cardSection.addItem(aNewCard);
   });
+  //const aNewCard = createCard(data);
+  //cardSection.addItem(aNewCard);
 });
 export const popupDelete = new Popup('.delete-popup');
 popupPhoto.setEventListeners(); // установить слушатели для ВО
