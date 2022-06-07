@@ -4,6 +4,7 @@ import './index.css';   // импорт стилей для вебпака
 import Card from '../components/Card.js';
 import Section from '../components/Section.js';
 import FormValidator from '../components/FormValidator.js';
+import Popup from '../components/Popup.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import UserInfo from '../components/UserInfo.js';
@@ -71,6 +72,7 @@ const popupEdit = new PopupWithForm('.popup-edit',(data) => {
 });
 const popupAdd = new PopupWithForm('.popup-add',(data) => {
   data.likes = [];
+  data.owner = {_id: 'dbbc920c38acac6899a63e51'};
   const aNewCard = createCard(data);
   cardSection.addItem(aNewCard);
   fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {
@@ -85,16 +87,18 @@ const popupAdd = new PopupWithForm('.popup-add',(data) => {
   })
   });
 });
+export const popupDelete = new Popup('.delete-popup');
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
 popupAdd.setEventListeners();
+popupDelete.setEventListeners();
 
 profileEditButton.addEventListener('click', function() {    // отслеживание кнопки "редактировать профиль"
   const userInfo = profileInfo.getUserInfo();
   popupName.value = userInfo.name;
   popupJob.value = userInfo.job;
   profileValidation.disableSubmit();
-  popupEdit.open();
+  popupDelete.open();
 });
 
 cardAddButton.addEventListener('click', function() {    // отслеживание кнопки "добавить карточку"

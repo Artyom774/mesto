@@ -1,10 +1,15 @@
+import { popupDelete } from "../pages";
+
 export default class Card {
-  constructor({link, name, likes}, cardSelector, handleCardClick) {
+  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick) {
     this._name = name;
     this._link = link;
     this._likes = likes.length;
+    this._id = _id;
+    this._ownerID = owner._id;
     this._cardSelector = cardSelector;
     this._handleCardClick = handleCardClick;
+    this.deleteCard = this.deleteCard.bind(this);
   }
 
   _getTemplate() {
@@ -19,15 +24,45 @@ export default class Card {
     this._cardPhoto.alt = this._name;
     this._element.querySelector('.card__caption').textContent = this._name;
     this._element.querySelector('.card__number-of-likes').textContent = this._likes;
+    if (this._ownerID !== 'dbbc920c38acac6899a63e51') {this._element.querySelector('.card__delete').classList.add('card__delete_hidden');}
     this._setEventListeners();
     return this._element;
+  }
+
+  deleteCard() {
+    popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
+    popupDelete.close();
+    this._element.remove(); this._element = null;
+    fetch(`https://mesto.nomoreparties.co/v1/cohort-42/cards/${this._id}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
+      'Content-Type': 'application/json'
+    }
+    });
   }
 
   _setEventListeners() {
     this._element.querySelector('.card__like').addEventListener('click', function(evt) {
       evt.target.classList.toggle('card__like_active');
     });
-    this._element.querySelector('.card__delete').addEventListener('click', () => {this._element.remove(); this._element = null});
+    if (this._ownerID === 'dbbc920c38acac6899a63e51') {
+    this._element.querySelector('.card__delete').addEventListener('click', () => {
+      popupDelete.open();
+      popupDelete._popup.querySelector('.popup__submit-button').addEventListener('click', this.deleteCard);
+      popupDelete._popup.addEventListener('mousedown', (evt) => {
+        if (evt.target.classList.contains('popup_opened')) {
+          popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
+        };
+        if (evt.target.classList.contains('popup__close')) {
+          popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
+        };
+      });
+      document.addEventListener('keydown', (evt) => {if (evt.key === 'Escape') {
+        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
+      };
+    });
+    });};
     this._cardPhoto.addEventListener('click', () => {this._handleCardClick(this._link, this._name)}); // добавление возможности увеличить фотографию
   }
 }

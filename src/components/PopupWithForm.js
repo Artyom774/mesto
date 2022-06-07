@@ -11,7 +11,7 @@ export default class PopupWithForm extends Popup {
   _getInputValues() {   // собрать информацию с формы в объект
     const elements = {};
     this._inputList.forEach((input) => {elements[input.name] = input.value;});
-    return elements; 
+    return elements;
   }
 
   setEventListeners() {   // установить слушатели
