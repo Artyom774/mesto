@@ -88,8 +88,6 @@ const popupAdd = new PopupWithForm('.popup-add',(data) => {
     const aNewCard = createCard(result);
     cardSection.addItem(aNewCard);
   });
-  //const aNewCard = createCard(data);
-  //cardSection.addItem(aNewCard);
 });
 export const popupDelete = new Popup('.delete-popup');
 popupPhoto.setEventListeners(); // установить слушатели для ВО
@@ -102,7 +100,7 @@ profileEditButton.addEventListener('click', function() {    // отслежив�
   popupName.value = userInfo.name;
   popupJob.value = userInfo.job;
   profileValidation.disableSubmit();
-  popupDelete.open();
+  popupEdit.open();
 });
 
 cardAddButton.addEventListener('click', function() {    // отслеживание кнопки "добавить карточку"
