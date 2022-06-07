@@ -8,8 +8,8 @@ import Popup from '../components/Popup.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import UserInfo from '../components/UserInfo.js';
-import { profileAvatar, profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
-  popupName, popupJob, popupEditForm, popupAddForm, initialCards, setting } from '../utils/constants.js';
+import { profileAvatar, profileAvatarButton, profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
+  popupName, popupJob, popupEditForm, popupAddForm, popupAvatarForm, initialCards, setting } from '../utils/constants.js';
 
 function createCard(item) {
   const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}); 
@@ -51,12 +51,14 @@ const cardSection = new Section({items: initialCards, renderer: (item) => {   //
 const profileInfo = new UserInfo({name: '.profile__name', job: '.profile__description'});
 const profileValidation = new FormValidator(setting, popupEditForm);
 const addCardValidation = new FormValidator(setting, popupAddForm);
+const popupAvatarValidation = new FormValidator(setting, popupAvatarForm);
 profileValidation.enableValidation(); // запускает валидацию формы
 addCardValidation.enableValidation();
+popupAvatarValidation.enableValidation();
 
 // создание всплывающих окон (ВО)
 export const popupPhoto = new PopupWithImage('.photo-popup');
-const popupEdit = new PopupWithForm('.popup-edit',(data) => {
+const popupEdit = new PopupWithForm('.popup-edit', (data) => {
   profileInfo.setUserInfo(data.name, data.job);
   fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me', {   // отправка обновлённых данных о пользователе
   method: 'PATCH',
@@ -70,9 +72,7 @@ const popupEdit = new PopupWithForm('.popup-edit',(data) => {
   })
   });
 });
-const popupAdd = new PopupWithForm('.popup-add',(data) => {
-  //data.likes = [];
-  //data.owner = {_id: 'dbbc920c38acac6899a63e51'};
+const popupAdd = new PopupWithForm('.popup-add', (data) => {
   fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {  // загрузка новой карточки на сервер
   method: 'POST',
   headers: {
@@ -90,10 +90,29 @@ const popupAdd = new PopupWithForm('.popup-add',(data) => {
   });
 });
 export const popupDelete = new Popup('.delete-popup');
+const popupAvatar = new PopupWithForm('.popup-avatar', (data) => {
+  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me/avatar', {  // загрузка новой карточки на сервер
+  method: 'PATCH',
+  headers: {
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
+    'Content-Type': 'application/json; charset=UTF-8'
+  },
+  body: JSON.stringify({
+    avatar: data.avatar
+  })
+  }).then(res=>res.json())
+  .then(result => profileAvatar.src = result.avatar);
+});
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
 popupAdd.setEventListeners();
 popupDelete.setEventListeners();
+popupAvatar.setEventListeners();
+
+profileAvatarButton.addEventListener('click', () => {
+  popupAvatarValidation.disableSubmit();
+  popupAvatar.open();
+})
 
 profileEditButton.addEventListener('click', function() {    // отслеживание кнопки "редактировать профиль"
   const userInfo = profileInfo.getUserInfo();
