@@ -12,10 +12,10 @@ import UserInfo from '../components/UserInfo.js';
 import { profileAvatar, profileAvatarButton, profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
   popupName, popupJob, popupEditForm, popupAddForm, popupAvatarForm, initialCards, setting } from '../utils/constants.js';
 
-const api = new Api({
+export const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-42',
   headers: {
-    authorization: 'c56e30dc-2883-4270-a59e-b2f7bae969c6',
+    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
     'Content-Type': 'application/json'
   }
 });
@@ -25,23 +25,13 @@ function createCard(item) {
   return newCard.createCard();
 }
 
-fetch('https://nomoreparties.co/v1/cohort-42/users/me', { // загрузка сведений о пользователе со сервера
-  headers: {
-    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8'
-  }
-})
-  .then(res => res.json())
+api.getUserInfo()
   .then((result) => {
     profileInfo.setUserInfo(result.name, result.about);
     profileAvatar.src = result.avatar;
   });
 
-fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {  // загрузка изначальных карточек
-  headers: {
-    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8'
-  }
-})
-  .then(res => res.json())
+api.getInitialCards()   // загрузка изначальных карточек
   .then((result) => {
     result.forEach((item) => {
       initialCards.push(item);
@@ -69,33 +59,13 @@ popupAvatarValidation.enableValidation();
 export const popupPhoto = new PopupWithImage('.photo-popup');
 const popupEdit = new PopupWithForm('.popup-edit', (data) => {
   popupEdit.renderLoading(true, 'Сохранить');
-  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me', {   // отправка обновлённых данных о пользователе
-  method: 'PATCH',
-  headers: {
-    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    name: data.name,
-    about: data.job
-  })
-  }).then(res => res.json())
+  api.refreshUserInfo(data)   // отправка обновлённых данных о пользователе
   .then((result) => {profileInfo.setUserInfo(result.name, result.about); popupEdit.close();})
   .finally(()=>{popupEdit.renderLoading(false, 'Сохранить');});
 });
 const popupAdd = new PopupWithForm('.popup-add', (data) => {
   popupAdd.renderLoading(true, 'Создать');
-  fetch('https://mesto.nomoreparties.co/v1/cohort-42/cards', {  // загрузка новой карточки на сервер
-  method: 'POST',
-  headers: {
-    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-    'Content-Type': 'application/json; charset=UTF-8'
-  },
-  body: JSON.stringify({
-    name: data.name,
-    link: data.link
-  })
-  }).then(res => res.json())
+  api.postNewCard(data)   // загрузка новой карточки на сервер
   .then(result => {
     const aNewCard = createCard(result);
     cardSection.addItem(aNewCard);
@@ -106,16 +76,7 @@ const popupAdd = new PopupWithForm('.popup-add', (data) => {
 export const popupDelete = new Popup('.delete-popup');
 const popupAvatar = new PopupWithForm('.popup-avatar', (data) => {
   popupAvatar.renderLoading(true, 'Сохранить');
-  fetch('https://mesto.nomoreparties.co/v1/cohort-42/users/me/avatar', {  // загрузка новой аватарки пользователя
-  method: 'PATCH',
-  headers: {
-    authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-    'Content-Type': 'application/json; charset=UTF-8'
-  },
-  body: JSON.stringify({
-    avatar: data.avatar
-  })
-  }).then(res=>res.json())
+  api.refreshAvatar(data)   // загрузка новой аватарки пользователя
   .then(result => {profileAvatar.src = result.avatar; popupAvatar.close();})
   .finally(()=>{popupAvatar.renderLoading(false, 'Сохранить');});
 });

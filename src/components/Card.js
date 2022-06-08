@@ -1,3 +1,4 @@
+import {api} from '../pages/index.js';
 import { popupDelete } from "../pages";
 
 export default class Card {
@@ -33,39 +34,21 @@ export default class Card {
     return this._element;
   }
 
-  deleteCard() {
+  deleteCard() {  // удалить карточку
     popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
     popupDelete.close();
     this._element.remove(); this._element = null;
-    fetch(`https://mesto.nomoreparties.co/v1/cohort-42/cards/${this._id}`, {
-    method: 'DELETE',
-    headers: {
-      authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-      'Content-Type': 'application/json'
-    }
-    });
+    api.deleteCard(this._id);
   }
 
   _setEventListeners() {
     this._element.querySelector('.card__like').addEventListener('click', (evt) => {
       evt.target.classList.toggle('card__like_active');
       if (evt.target.classList.contains('card__like_active')) {
-        fetch(`https://mesto.nomoreparties.co/v1/cohort-42/cards/${this._id}/likes`, {
-          method: 'PUT',
-          headers: {
-            authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-            'Content-Type': 'application/json'
-          }
-        }).then(res => res.json())
+        api.putLike(this._id)   // поставить лайк
         .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length});
       } else {
-        fetch(`https://mesto.nomoreparties.co/v1/cohort-42/cards/${this._id}/likes`, {
-          method: 'DELETE',
-          headers: {
-            authorization: '4ebcb58d-24e4-4099-bba2-cf0ad7de26a8',
-            'Content-Type': 'application/json'
-          }
-        }).then(res => res.json())
+        api.deleteLike(this._id)  // убрать лайк
         .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length});
       };
     });
