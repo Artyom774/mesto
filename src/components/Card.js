@@ -2,7 +2,7 @@ import {api} from '../pages/index.js';
 import { popupDelete } from "../pages";
 
 export default class Card {
-  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick) {
+  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick, functionDeleteCard, deleteListener) {
     this._name = name;
     this._link = link;
     this._likes = likes.length;
@@ -11,6 +11,8 @@ export default class Card {
     this._ownerID = owner._id;
     this._cardSelector = cardSelector;
     this._handleCardClick = handleCardClick;
+    this._functionDeleteCard = functionDeleteCard;
+    this._deleteListener = deleteListener;
     this.deleteCard = this.deleteCard.bind(this);
   }
 
@@ -19,7 +21,7 @@ export default class Card {
     return cardTemplate;
   }
 
-  createCard() {
+  createCard(adminID) {
     this._element = this._getTemplate();
     this._cardPhoto = this._element.querySelector('.card__photo');
     this._cardPhoto.src = this._link;
@@ -27,48 +29,32 @@ export default class Card {
     this._element.querySelector('.card__caption').textContent = this._name;
     this._element.querySelector('.card__number-of-likes').textContent = this._likes;
     this._likesArray.forEach(element => {
-      if (element._id === 'dbbc920c38acac6899a63e51') {this._element.querySelector('.card__like').classList.add('card__like_active')};
+      if (element._id === adminID) {this._element.querySelector('.card__like').classList.add('card__like_active')};
     });
-    if (this._ownerID !== 'dbbc920c38acac6899a63e51') {this._element.querySelector('.card__delete').classList.add('card__delete_hidden');}
-    this._setEventListeners();
+    if (this._ownerID !== adminID) {this._element.querySelector('.card__delete').classList.add('card__delete_hidden');}
+    this._setEventListeners(adminID);
     return this._element;
   }
 
   deleteCard() {  // удалить карточку
-    popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
-    popupDelete.close();
-    this._element.remove(); this._element = null;
-    api.deleteCard(this._id);
+    this._functionDeleteCard();
   }
 
-  _setEventListeners() {
+  _setEventListeners(adminID) {
     this._element.querySelector('.card__like').addEventListener('click', (evt) => {
-      evt.target.classList.toggle('card__like_active');
-      if (evt.target.classList.contains('card__like_active')) {
+      if (!evt.target.classList.contains('card__like_active')) {
         api.putLike(this._id)   // поставить лайк
-        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length});
+        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
+        evt.target.classList.toggle('card__like_active');});
       } else {
         api.deleteLike(this._id)  // убрать лайк
-        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length});
+        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
+        evt.target.classList.toggle('card__like_active');});
       };
     });
-    if (this._ownerID === 'dbbc920c38acac6899a63e51') {
-    this._element.querySelector('.card__delete').addEventListener('click', () => {
-      popupDelete.open();
-      popupDelete._popup.querySelector('.popup__submit-button').addEventListener('click', this.deleteCard);
-      popupDelete._popup.addEventListener('mousedown', (evt) => {
-        if (evt.target.classList.contains('popup_opened')) {
-          popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
-        };
-        if (evt.target.classList.contains('popup__close')) {
-          popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
-        };
-      });
-      document.addEventListener('keydown', (evt) => {if (evt.key === 'Escape') {
-        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', this.deleteCard);
-      };
-    });
-    });};
+    if (this._ownerID === adminID) {
+    this._element.querySelector('.card__delete').addEventListener('click', this._deleteListener);
+  };
     this._cardPhoto.addEventListener('click', () => {this._handleCardClick(this._link, this._name)}); // добавление возможности увеличить фотографию
   }
 }

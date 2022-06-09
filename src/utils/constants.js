@@ -30,21 +30,6 @@ const cardImage6 = new URL('../images/ural.jpg', import.meta.url);*/
 
 export const initialCards = []  // массив с данными по начальным карточкам
 
-/*export const initialCards = [  // массив с данными по начальным карточкам
-  { title: 'Тобольск',
-    link: cardImage1},
-  { title: 'Омск',
-    link: cardImage2},
-  { title: 'Тюмень',
-    link: cardImage3},
-  { title: 'Башкирия',
-    link: cardImage4},
-  { title: 'Екатеринбург',
-    link: cardImage5},
-  { title: 'Урал',
-    link: cardImage6}
-];*/
-
 export const setting = {   // настройки для валидации форм
   inputSelector: '.popup__input',
   inputClassInvalid: 'popup__input_invalid',

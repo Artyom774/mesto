@@ -21,15 +21,37 @@ export const api = new Api({
 });
 
 function createCard(item) {
-  const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}); 
-  return newCard.createCard();
+  const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}, () => {
+    popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
+    popupDelete.close();
+    newCard._element.remove(); newCard._element = null;
+    api.deleteCard(newCard._id).catch(err => console.log(err));
+  }, () => {
+    popupDelete.open();
+    popupDelete._popup.querySelector('.popup__submit-button').addEventListener('click', newCard.deleteCard);
+    popupDelete._popup.addEventListener('mousedown', (evt) => {
+      if (evt.target.classList.contains('popup_opened')) {
+        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
+      };
+      if (evt.target.classList.contains('popup__close')) {
+        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
+      };
+    });
+    document.addEventListener('keydown', (evt) => {if (evt.key === 'Escape') {
+      popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
+    };
+  });
+  }); 
+  return newCard.createCard(adminID);
 }
 
+let adminID = '';
 api.getUserInfo()
   .then((result) => {
     profileInfo.setUserInfo(result.name, result.about);
     profileAvatar.src = result.avatar;
-  });
+    adminID = result._id;
+  }).catch(err => console.log(err));
 
 api.getInitialCards()   // загрузка изначальных карточек
   .then((result) => {
@@ -40,7 +62,7 @@ api.getInitialCards()   // загрузка изначальных карточ�
       cardSection.addItem(createCard(item));
     }}, cardsContainerSelection);
     cardSection.addInitialItems();  // добавить начальные карточки
-  });
+  }).catch(err => console.log(err));
 
 const cardSection = new Section({items: initialCards, renderer: (item) => {   // секция для карточек
   cardSection.addItem(createCard(item));
@@ -61,7 +83,8 @@ const popupEdit = new PopupWithForm('.popup-edit', (data) => {
   popupEdit.renderLoading(true, 'Сохранить');
   api.refreshUserInfo(data)   // отправка обновлённых данных о пользователе
   .then((result) => {profileInfo.setUserInfo(result.name, result.about); popupEdit.close();})
-  .finally(()=>{popupEdit.renderLoading(false, 'Сохранить');});
+  .finally(()=>{popupEdit.renderLoading(false, 'Сохранить');})
+  .catch(err => console.log(err));
 });
 const popupAdd = new PopupWithForm('.popup-add', (data) => {
   popupAdd.renderLoading(true, 'Создать');
@@ -71,14 +94,16 @@ const popupAdd = new PopupWithForm('.popup-add', (data) => {
     cardSection.addItem(aNewCard);
     popupAdd.close();
   })
-  .finally(()=>{popupAdd.renderLoading(false, 'Создать');});
+  .finally(()=>{popupAdd.renderLoading(false, 'Создать');})
+  .catch(err => console.log(err));
 });
 export const popupDelete = new Popup('.delete-popup');
 const popupAvatar = new PopupWithForm('.popup-avatar', (data) => {
   popupAvatar.renderLoading(true, 'Сохранить');
   api.refreshAvatar(data)   // загрузка новой аватарки пользователя
   .then(result => {profileAvatar.src = result.avatar; popupAvatar.close();})
-  .finally(()=>{popupAvatar.renderLoading(false, 'Сохранить');});
+  .finally(()=>{popupAvatar.renderLoading(false, 'Сохранить');})
+  .catch(err => console.log(err));
 });
 popupPhoto.setEventListeners(); // установить слушатели для ВО
 popupEdit.setEventListeners();
