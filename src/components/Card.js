@@ -1,8 +1,5 @@
-import {api} from '../pages/index.js';
-import { popupDelete } from "../pages";
-
 export default class Card {
-  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick, functionDeleteCard, deleteListener) {
+  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick, functionDeleteCard, deleteListener, like) {
     this._name = name;
     this._link = link;
     this._likes = likes.length;
@@ -13,6 +10,7 @@ export default class Card {
     this._handleCardClick = handleCardClick;
     this._functionDeleteCard = functionDeleteCard;
     this._deleteListener = deleteListener;
+    this._like = like;
     this.deleteCard = this.deleteCard.bind(this);
   }
 
@@ -42,15 +40,7 @@ export default class Card {
 
   _setEventListeners(adminID) {
     this._element.querySelector('.card__like').addEventListener('click', (evt) => {
-      if (!evt.target.classList.contains('card__like_active')) {
-        api.putLike(this._id)   // поставить лайк
-        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
-        evt.target.classList.toggle('card__like_active');});
-      } else {
-        api.deleteLike(this._id)  // убрать лайк
-        .then((result) => {this._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
-        evt.target.classList.toggle('card__like_active');});
-      };
+      this._like(evt);
     });
     if (this._ownerID === adminID) {
     this._element.querySelector('.card__delete').addEventListener('click', this._deleteListener);

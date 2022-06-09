@@ -1,6 +1,5 @@
 // объявление констант для элементов страницы
 const profile = document.querySelector('.profile');   // секция "профиль"
-export const profileAvatar = profile.querySelector('.profile__avatar');
 export const profileAvatarButton = profile.querySelector('.profile__avatar-change-icon')
 export const profileEditButton = profile.querySelector('.profile__edit-button'); // кнопка "редактировать профиль"
 export const cardAddButton = profile.querySelector('.profile__add-button');    // кнопка "добавить карточку"

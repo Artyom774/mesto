@@ -20,7 +20,6 @@ export default class PopupWithForm extends Popup {
     this._form.addEventListener('submit', (evt) => {
       evt.preventDefault();
       this._submitForm(this._getInputValues());
-      //this.close();
     });
   }
 
@@ -29,8 +28,8 @@ export default class PopupWithForm extends Popup {
     this._form.reset();
   }
 
-  renderLoading(isLoading, submitText) {
-    if (isLoading) {this._submitButton.textContent = submitText + '...'}
+  renderLoading(isLoading, submitText, submitTextLoading) {
+    if (isLoading) {this._submitButton.textContent = submitTextLoading + '...'}
     else {this._submitButton.textContent = submitText};
   }
 }
