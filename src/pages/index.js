@@ -22,6 +22,10 @@ const api = new Api({
 
 function createCard(item) {
   const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}, () => {
+    popupDelete.open();
+    popupDelete.getElement(newCard);
+  },
+   /*() => {
     popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
     popupDelete.close();
     newCard._element.remove(); newCard._element = null;
@@ -41,7 +45,7 @@ function createCard(item) {
       popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
     };
   });
-  }, (evt) => {
+  },*/ (evt) => {
     if (!evt.target.classList.contains('card__like_active')) {
       api.putLike(newCard._id)   // поставить лайк
       .then((result) => {newCard.thenPutLike(evt, result.likes)})
@@ -101,7 +105,15 @@ const popupAdd = new PopupWithForm('.popup-add', (data) => {
   .finally(()=>{popupAdd.renderLoading(false, 'Создать', 'Создание');})
   .catch(err => console.log(err));
 });
-const popupDelete = new PopupConfirmation('.delete-popup');
+const popupDelete = new PopupConfirmation('.delete-popup', (card) => {
+  console.log(card);
+  api.deleteCard(card._id)
+  .then(() => {
+    card.deleteCard();
+    popupDelete.close();
+  })
+  .catch(err => console.log(err));
+});
 const popupAvatar = new PopupWithForm('.popup-avatar', (data) => {
   popupAvatar.renderLoading(true, 'Сохранить', 'Сохранение');
   api.refreshAvatar(data)   // загрузка новой аватарки пользователя

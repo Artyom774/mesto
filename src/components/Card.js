@@ -1,5 +1,5 @@
 export default class Card {
-  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick, functionDeleteCard, deleteListener, like) {
+  constructor({link, name, likes, _id, owner}, cardSelector, handleCardClick, handleDeleteCard,/*functionDeleteCard, deleteListener,*/ like) {
     this._name = name;
     this._link = link;
     this._likes = likes.length;
@@ -8,10 +8,11 @@ export default class Card {
     this._ownerID = owner._id;
     this._cardSelector = cardSelector;
     this._handleCardClick = handleCardClick;
-    this._functionDeleteCard = functionDeleteCard;
-    this._deleteListener = deleteListener;
+    this._handleDeleteCard = handleDeleteCard;
+    //this._functionDeleteCard = functionDeleteCard;
+    //this._deleteListener = deleteListener;
     this._like = like;
-    this.deleteCard = this.deleteCard.bind(this);
+    //this.deleteCard = this.deleteCard.bind(this);
   }
 
   _getTemplate() {
@@ -44,16 +45,22 @@ export default class Card {
     evt.target.classList.toggle('card__like_active');
   }
 
-  deleteCard() {  // удалить карточку
-    this._functionDeleteCard();
+  deleteCard() {
+    this._element.remove();
+    this._element = null;
   }
+
+  /*deleteCard() {  // удалить карточку
+    this._functionDeleteCard();
+  }*/
 
   _setEventListeners(adminID) {
     this._element.querySelector('.card__like').addEventListener('click', (evt) => {
       this._like(evt);
     });
     if (this._ownerID === adminID) {
-    this._element.querySelector('.card__delete').addEventListener('click', this._deleteListener);
+    //this._element.querySelector('.card__delete').addEventListener('click', this._deleteListener);
+    this._element.querySelector('.card__delete').addEventListener('click', this._handleDeleteCard);
   };
     this._cardPhoto.addEventListener('click', () => {this._handleCardClick(this._link, this._name)}); // добавление возможности увеличить фотографию
   }
