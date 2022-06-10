@@ -34,13 +34,13 @@ export default class Card {
     return this._element;
   }
 
-  thenPutLike(evt, likes) {
-    this._element.querySelector('.card__number-of-likes').textContent = likes.length;
+  thenPutLike(evt, likesArray) {
+    this._element.querySelector('.card__number-of-likes').textContent = likesArray.length;
     evt.target.classList.toggle('card__like_active');
   }
 
-  thenDeleteLike(evt, likes) {
-    this._element.querySelector('.card__number-of-likes').textContent = likes.length;
+  thenDeleteLike(evt, likesArray) {
+    this._element.querySelector('.card__number-of-likes').textContent = likesArray.length;
     evt.target.classList.toggle('card__like_active');
   }
 
