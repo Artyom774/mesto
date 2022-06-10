@@ -27,8 +27,6 @@ const cardImage4 = new URL('../images/bashkiria.jpg', import.meta.url);
 const cardImage5 = new URL('../images/yekaterinburg.jpg', import.meta.url);
 const cardImage6 = new URL('../images/ural.jpg', import.meta.url);*/
 
-export const initialCards = []  // массив с данными по начальным карточкам
-
 export const setting = {   // настройки для валидации форм
   inputSelector: '.popup__input',
   inputClassInvalid: 'popup__input_invalid',

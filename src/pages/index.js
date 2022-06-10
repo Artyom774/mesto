@@ -10,7 +10,7 @@ import PopupWithForm from '../components/PopupWithForm.js';
 import PopupConfirmation from '../components/PoupConfirmation.js';
 import UserInfo from '../components/UserInfo.js';
 import { profileAvatarButton, profileEditButton, cardAddButton, cardsContainerSelection, cardTemplate,
-  popupName, popupJob, popupEditForm, popupAddForm, popupAvatarForm, initialCards, setting } from '../utils/constants.js';
+  popupName, popupJob, popupEditForm, popupAddForm, popupAvatarForm, setting } from '../utils/constants.js';
 
 const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-42',
@@ -44,12 +44,12 @@ function createCard(item) {
   }, (evt) => {
     if (!evt.target.classList.contains('card__like_active')) {
       api.putLike(newCard._id)   // поставить лайк
-      .then((result) => {newCard._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
-      evt.target.classList.toggle('card__like_active');});
+      .then((result) => {newCard.thenPutLike(evt, result.likes)})
+      .catch(err => console.log(err));
     } else {
       api.deleteLike(newCard._id)  // убрать лайк
-      .then((result) => {newCard._element.querySelector('.card__number-of-likes').textContent = result.likes.length;
-      evt.target.classList.toggle('card__like_active');});
+      .then((result) => {newCard.thenDeleteLike(evt, result.likes)})
+      .catch(err => console.log(err));
     };
   });
   return newCard.createCard(adminID);
@@ -70,9 +70,6 @@ Promise.all([
     profileInfo.setUserInfo(info.name, info.about);
     profileInfo.setAvatar(info.avatar);
     adminID = info._id;
-    initialCards.forEach((item) => {
-      initialCards.push(item);
-    });
     cardSection.addInitialItems(initialCards);  // добавить начальные карточки
   }).catch(err => console.log(err))
 

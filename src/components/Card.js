@@ -34,6 +34,16 @@ export default class Card {
     return this._element;
   }
 
+  thenPutLike(evt, likes) {
+    this._element.querySelector('.card__number-of-likes').textContent = likes.length;
+    evt.target.classList.toggle('card__like_active');
+  }
+
+  thenDeleteLike(evt, likes) {
+    this._element.querySelector('.card__number-of-likes').textContent = likes.length;
+    evt.target.classList.toggle('card__like_active');
+  }
+
   deleteCard() {  // удалить карточку
     this._functionDeleteCard();
   }
