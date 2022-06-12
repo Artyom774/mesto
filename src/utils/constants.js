@@ -19,14 +19,6 @@ export const popupAddForm = popupAdd.querySelector('.popup__form');
 const popupAvatar = document.querySelector('.popup-avatar');
 export const popupAvatarForm = popupAvatar.querySelector('.popup__form');
 
-/*// константы для вебпака
-const cardImage1 = new URL('../images/tobolsk.jpg', import.meta.url);
-const cardImage2 = new URL('../images/omsk.jpg', import.meta.url);
-const cardImage3 = new URL('../images/tyumen.jpg', import.meta.url);
-const cardImage4 = new URL('../images/bashkiria.jpg', import.meta.url);
-const cardImage5 = new URL('../images/yekaterinburg.jpg', import.meta.url);
-const cardImage6 = new URL('../images/ural.jpg', import.meta.url);*/
-
 export const setting = {   // настройки для валидации форм
   inputSelector: '.popup__input',
   inputClassInvalid: 'popup__input_invalid',

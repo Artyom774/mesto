@@ -24,28 +24,7 @@ function createCard(item) {
   const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}, () => {
     popupDelete.open();
     popupDelete.getElement(newCard);
-  },
-   /*() => {
-    popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
-    popupDelete.close();
-    newCard._element.remove(); newCard._element = null;
-    api.deleteCard(newCard._id).catch(err => console.log(err));
-  }, () => {
-    popupDelete.open();
-    popupDelete._popup.querySelector('.popup__submit-button').addEventListener('click', newCard.deleteCard);
-    popupDelete._popup.addEventListener('mousedown', (evt) => {
-      if (evt.target.classList.contains('popup_opened')) {
-        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
-      };
-      if (evt.target.classList.contains('popup__close')) {
-        popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
-      };
-    });
-    document.addEventListener('keydown', (evt) => {if (evt.key === 'Escape') {
-      popupDelete._popup.querySelector('.popup__submit-button').removeEventListener('click', newCard.deleteCard);
-    };
-  });
-  },*/ (evt) => {
+  }, (evt) => {
     if (!evt.target.classList.contains('card__like_active')) {
       api.putLike(newCard._id)   // поставить лайк
       .then((result) => {newCard.thenPutLike(evt, result.likes)})
