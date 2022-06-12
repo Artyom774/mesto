@@ -24,16 +24,16 @@ function createCard(item) {
   const newCard = new Card(item, cardTemplate, (link, name) => {popupPhoto.open(link, name);}, () => {
     popupDelete.open();
     popupDelete.getElement(newCard);
-  }, (evt) => {
-    if (!evt.target.classList.contains('card__like_active')) {
+  }, (isMylike) => {
+    if (!isMylike) {
       api.putLike(newCard._id)   // поставить лайк
-      .then((result) => {newCard.thenPutLike(evt, result.likes)})
+      .then((result) => {newCard.thenPutLike(result.likes)})
       .catch(err => console.log(err));
     } else {
       api.deleteLike(newCard._id)  // убрать лайк
-      .then((result) => {newCard.thenDeleteLike(evt, result.likes)})
+      .then((result) => {newCard.thenDeleteLike(result.likes)})
       .catch(err => console.log(err));
-    };
+    }
   });
   return newCard.createCard(adminID);
 }
