@@ -47,7 +47,7 @@ const cardSection = new Section({renderer: (item) => {   // секция для 
 
 Promise.all([
   api.getUserInfo(),  // запрос информации о профиле
-  api.getInitialCards()  // зашрузка изначальных карточек
+  api.getInitialCards()  // загрузка изначальных карточек
 ])
   .then(([info, initialCards])=>{
     profileInfo.setUserInfo(info.name, info.about);
